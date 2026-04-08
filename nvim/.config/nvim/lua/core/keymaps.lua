@@ -26,3 +26,33 @@ vim.api.nvim_create_autocmd("TermOpen", {
     end,
 })
 
+-- Custom Project Picker
+_G.PickProject = function()
+    -- 1. DEFINE YOUR MASTER FOLDER HERE:
+    -- Where do you keep all your code? (e.g., "~/testProj", "~/Projects", "~/Documents/Code")
+    local search_dir = "~/Projects"
+
+    -- 2. Build the search command (Find directories, max 2 levels deep)
+    local cmd = string.format("find %s -mindepth 1 -maxdepth 2 -type d", search_dir)
+
+    -- 3. Run the fuzzy finder
+    require("fzf-lua").fzf_exec(cmd, {
+        prompt = "Load Project> ",
+        actions = {
+            ["default"] = function(selected)
+                if #selected > 0 then
+                    local dir = selected[1]
+                    -- Change Neovim's global working directory
+                    vim.cmd("cd " .. dir)
+                    -- Show a success message
+                    vim.notify("Project loaded: " .. dir, vim.log.levels.INFO)
+                    -- Automatically pop open the file finder in the new project!
+                    require("fzf-lua").files()
+                end
+            end
+        }
+    })
+end
+
+-- Add a keybind so you can switch projects from anywhere
+vim.keymap.set("n", "<leader>fp", "<cmd>lua PickProject()<CR>", { desc = "Find Project" })
