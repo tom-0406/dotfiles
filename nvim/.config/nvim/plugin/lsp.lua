@@ -1,10 +1,11 @@
 vim.lsp.config("*", {
-    capabilities = require("blink.cmp").get_lsp_capabilities()
+	capabilities = require("blink.cmp").get_lsp_capabilities(),
 })
 
 vim.lsp.enable({
-  "lua_ls",
-  "ts_ls",
-  "tailwindcss",
+	"lua_ls",
+	"ts_ls",
+	"tailwindcss",
+	"gopls",
 })
 vim.diagnostic.config({ virtual_text = true })
